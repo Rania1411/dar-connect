@@ -2,6 +2,8 @@ import { useEffect, useState } from 'react'
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { supabase } from './supabaseClient'
 import Login from './pages/Login'
+import Landing from './pages/Landing'
+import Home from './pages/Home'
 import Houses from './pages/Houses'
 import Dashboard from './pages/Dashboard'
 import Navbar from './components/Navbar'
@@ -38,7 +40,19 @@ export default function App() {
     <BrowserRouter>
       {session && <Navbar session={session} />}
       <Routes>
-        <Route path="/login" element={session ? <Navigate to="/houses" replace /> : <Login />} />
+        {/* Public routes */}
+        <Route path="/" element={session ? <Navigate to="/home" replace /> : <Landing />} />
+        <Route path="/login" element={session ? <Navigate to="/home" replace /> : <Login />} />
+
+        {/* Protected routes */}
+        <Route
+          path="/home"
+          element={
+            <ProtectedRoute session={session}>
+              <Home session={session} />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/houses"
           element={
@@ -55,7 +69,7 @@ export default function App() {
             </ProtectedRoute>
           }
         />
-        <Route path="*" element={<Navigate to={session ? '/houses' : '/login'} replace />} />
+        <Route path="*" element={<Navigate to={session ? '/home' : '/'} replace />} />
       </Routes>
     </BrowserRouter>
   )

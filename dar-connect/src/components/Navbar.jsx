@@ -13,19 +13,29 @@ export default function Navbar({ session }) {
   return (
     <nav className="glass sticky top-0 z-50 border-b border-dark-border">
       <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
-        <Link to="/houses" className="flex items-center gap-2">
+        <Link to="/home" className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
               <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
               <polyline points="9 22 9 12 15 12 15 22"/>
             </svg>
           </div>
-          <span className="font-display font-700 text-lg text-white tracking-tight">
+          <span className="font-display font-bold text-lg text-white tracking-tight">
             Dar<span className="text-primary">Connect</span>
           </span>
         </Link>
 
         <div className="flex items-center gap-1">
+          <Link
+            to="/home"
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
+              isActive('/home')
+                ? 'bg-primary/20 text-primary'
+                : 'text-slate-400 hover:text-white hover:bg-white/5'
+            }`}
+          >
+            Home
+          </Link>
           <Link
             to="/houses"
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
