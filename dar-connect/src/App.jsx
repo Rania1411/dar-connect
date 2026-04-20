@@ -5,7 +5,12 @@ import Login from './pages/Login'
 import Landing from './pages/Landing'
 import Home from './pages/Home'
 import Houses from './pages/Houses'
+import HouseDetail from './pages/HouseDetail'
 import Dashboard from './pages/Dashboard'
+import Profile from './pages/Profile'
+import Favorites from './pages/Favorites'
+import ListProperty from './pages/ListProperty'
+import NotFound from './pages/NotFound'
 import Navbar from './components/Navbar'
 
 function ProtectedRoute({ session, children }) {
@@ -17,14 +22,8 @@ export default function App() {
   const [session, setSession] = useState(undefined)
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session)
-    })
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session)
-    })
-
+    supabase.auth.getSession().then(({ data: { session } }) => setSession(session))
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_e, session) => setSession(session))
     return () => subscription.unsubscribe()
   }, [])
 
@@ -40,36 +39,18 @@ export default function App() {
     <BrowserRouter>
       {session && <Navbar session={session} />}
       <Routes>
-        {/* Public routes */}
         <Route path="/" element={session ? <Navigate to="/home" replace /> : <Landing />} />
         <Route path="/login" element={session ? <Navigate to="/home" replace /> : <Login />} />
 
-        {/* Protected routes */}
-        <Route
-          path="/home"
-          element={
-            <ProtectedRoute session={session}>
-              <Home session={session} />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/houses"
-          element={
-            <ProtectedRoute session={session}>
-              <Houses session={session} />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/dashboard"
-          element={
-            <ProtectedRoute session={session}>
-              <Dashboard session={session} />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<Navigate to={session ? '/home' : '/'} replace />} />
+        <Route path="/home"         element={<ProtectedRoute session={session}><Home session={session} /></ProtectedRoute>} />
+        <Route path="/houses"       element={<ProtectedRoute session={session}><Houses session={session} /></ProtectedRoute>} />
+        <Route path="/houses/:id"   element={<ProtectedRoute session={session}><HouseDetail session={session} /></ProtectedRoute>} />
+        <Route path="/dashboard"    element={<ProtectedRoute session={session}><Dashboard session={session} /></ProtectedRoute>} />
+        <Route path="/profile"      element={<ProtectedRoute session={session}><Profile session={session} /></ProtectedRoute>} />
+        <Route path="/favorites"    element={<ProtectedRoute session={session}><Favorites session={session} /></ProtectedRoute>} />
+        <Route path="/list-property" element={<ProtectedRoute session={session}><ListProperty session={session} /></ProtectedRoute>} />
+
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
   )
